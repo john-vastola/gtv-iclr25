@@ -19,6 +19,8 @@ There is one Jupyter notebook per figure:
 <p align="center">
 <img src="fig3_feat_noise.png" width="400"/></p>
 
+Three files containing utility functions (`general_functions.py`, `linear_functions_1d.py`, and `linear_functions_2d.py`) are in the `functions/` folder. Intended notebook outputs are in the `results/` folder.
+
 ## Citation 
 
 ```
