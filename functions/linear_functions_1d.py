@@ -117,3 +117,23 @@ def sample_PF_ODE_1d(num_samples, x, t, time_funcs, mu_est):
     return x_t
 
 
+# similar to above, but batched over models
+def sample_PF_ODE_1d_batched(num_samples, x, t, time_funcs, mu_est):
+    num_x = len(x); num_models = mu_est.shape[0]
+    b, g_sq, a, sig_sq = time_funcs['beta_t'], time_funcs['g_sq_t'], time_funcs['alpha_t'], time_funcs['sig_sq_t']
+
+    x_t = np.random.normal(loc=0, scale=np.sqrt(sig_sq[0]), size=(num_models, num_samples))  # Init state
+    dt = np.roll(t,-1) - t; num_tsteps = len(t)-1         # get time steps
+    b_ = np.arange(num_models)[:, None]
+    
+    #inds = np.zeros((num_tsteps, num_samples),dtype=int)
+    # Euler steps
+    for j in range(num_tsteps):
+        # Find index corresponding to current state
+        i_ = np.clip(np.searchsorted(x, x_t), None, num_x-1) #; inds[j] = i_
+        
+        x_t = x_t - ( b[j]*x_t + (g_sq[j]/2)*((a[j]*mu_est[b_, i_, j] - x_t )/sig_sq[j]))*dt[j] 
+
+    return x_t
+
+
